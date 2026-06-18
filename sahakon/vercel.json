@@ -5,5 +5,8 @@
   "installCommand": "npm install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ]
+  ],
+  "github": {
+    "enabled": false
+  }
 }
