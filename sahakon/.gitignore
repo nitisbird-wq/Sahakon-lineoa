@@ -11,6 +11,12 @@ node_modules
 dist
 dist-ssr
 *.local
+.vite
+deploy-shot.mjs
+final-preview.mjs
+screenshots.mjs
+qa-screenshots.mjs
+persist-audit.mjs
 
 # Editor directories and files
 .vscode/*
