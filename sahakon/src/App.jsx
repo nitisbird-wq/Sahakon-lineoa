@@ -168,6 +168,150 @@ function getDateOptions(days=7){
   return opts;
 }
 
+/* ── Web Audio beep (S2 fix) ── */
+function playBeep(freq=880,dur=0.4,vol=0.25){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=ctx.createOscillator();
+    const gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type="sine";osc.frequency.value=freq;
+    gain.gain.setValueAtTime(vol,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur);
+    osc.start(ctx.currentTime);osc.stop(ctx.currentTime+dur);
+  }catch(e){}
+}
+
+/* ==================== STAFF SCREEN (S1 + S3 fix) ==================== */
+function StaffScreen({orders,onAdvance,redeemQueue,onApproveRedeem,bookings,onClose}){
+  const[pin,setPin]=useState("");
+  const[authed,setAuthed]=useState(false);
+  const[tab,setTab]=useState("orders");
+  const STAFF_PIN="1234";
+
+  if(!authed)return(
+    <div style={{position:"fixed",inset:0,background:"#080706",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",zIndex:100,fontFamily:"Prompt"}}>
+      <div style={{fontSize:11,letterSpacing:".4em",color:"#C9A96E",textTransform:"uppercase",marginBottom:24}}>Staff Access</div>
+      <div style={{fontSize:32,letterSpacing:".25em",color:"#EDE5D8",marginBottom:28,minHeight:40}}>{pin.replace(/./g,"●")}</div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10,width:220}}>
+        {[1,2,3,4,5,6,7,8,9,"⌫",0,"✓"].map(k=>(
+          <button key={k} onClick={()=>{
+            if(k==="⌫"){setPin(p=>p.slice(0,-1));return;}
+            if(k==="✓"){if(pin===STAFF_PIN)setAuthed(true);else{setPin("");return;}return;}
+            if(pin.length<4)setPin(p=>p+k);
+          }} style={{height:56,borderRadius:10,border:"1px solid #2A2520",background:k==="✓"?"#C9A96E":"#151210",color:k==="✓"?"#080706":"#EDE5D8",fontSize:18,fontFamily:"Prompt",fontWeight:600,cursor:"pointer"}}>
+            {k}
+          </button>
+        ))}
+      </div>
+      <button onClick={onClose} style={{marginTop:28,border:0,background:"transparent",color:"#7A6E5E",fontSize:12,cursor:"pointer",fontFamily:"Prompt"}}>ยกเลิก</button>
+      <div style={{marginTop:12,fontSize:10,color:"#7A6E5E",letterSpacing:".1em"}}>(เดโม PIN: 1234)</div>
+    </div>
+  );
+
+  const pendingOrders=(orders||[]).flatMap(o=>o.rounds.map(r=>({...r,orderNo:o.no,table:o.table||"-"}))).filter(r=>!["served","completed"].includes(r.status));
+  const statusLabel={waiting:"รอรับ",waiting_pos:"รอรับ",waiting_payment:"รอจ่าย",paid:"รอครัว",preparing:"กำลังทำ",ready:"พร้อมเสิร์ฟ"};
+  const nextStatus={waiting:"preparing",waiting_pos:"waiting_payment",waiting_payment:"paid",paid:"preparing",preparing:"ready",ready:"served"};
+  const nextLabel={waiting:"รับออเดอร์",waiting_pos:"รับออเดอร์",waiting_payment:"ยืนยันจ่ายแล้ว",paid:"ส่งเข้าครัว",preparing:"พร้อมเสิร์ฟ",ready:"เสิร์ฟแล้ว ✓"};
+
+  const tabs=[{id:"orders",label:"ออเดอร์",badge:pendingOrders.length},{id:"redeem",label:"Redeem",badge:(redeemQueue||[]).length},{id:"bookings",label:"จอง",badge:0}];
+
+  return(
+    <div style={{position:"fixed",inset:0,background:"#080706",zIndex:100,display:"flex",flexDirection:"column",fontFamily:"Prompt",maxWidth:430,margin:"0 auto"}}>
+      {/* header */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 18px",borderBottom:"1px solid #242018",background:"rgba(8,7,6,.95)"}}>
+        <div style={{fontSize:13,fontWeight:700,letterSpacing:".08em",color:"#C9A96E"}}>STAFF SCREEN</div>
+        <button onClick={onClose} style={{border:"1px solid #242018",background:"#151210",color:"#EDE5D8",borderRadius:8,padding:"6px 12px",fontSize:11,cursor:"pointer",fontFamily:"Prompt"}}>ออก</button>
+      </div>
+      {/* tabs */}
+      <div style={{display:"flex",borderBottom:"1px solid #242018",background:"#111009"}}>
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{flex:1,padding:"11px 4px",border:0,background:"transparent",color:tab===t.id?"#C9A96E":"#7A6E5E",fontFamily:"Prompt",fontSize:12,fontWeight:tab===t.id?700:500,borderBottom:tab===t.id?"2px solid #C9A96E":"2px solid transparent",cursor:"pointer",position:"relative"}}>
+            {t.label}{t.badge>0&&<span style={{position:"absolute",top:8,right:"calc(50% - 20px)",background:"#E85D30",color:"#fff",borderRadius:"99px",fontSize:9,fontWeight:700,padding:"1px 5px",minWidth:14,textAlign:"center"}}>{t.badge}</span>}
+          </button>
+        ))}
+      </div>
+      {/* content */}
+      <div style={{flex:1,overflowY:"auto",padding:"14px 16px"}}>
+
+        {tab==="orders"&&(<>
+          {pendingOrders.length===0
+            ?<div style={{textAlign:"center",marginTop:40,color:"#7A6E5E",fontSize:13}}>ไม่มีออเดอร์ที่รอดำเนินการ ✓</div>
+            :pendingOrders.map((r,i)=>(
+              <div key={i} style={{background:"#151210",border:"1px solid #242018",borderRadius:12,padding:"14px",marginBottom:10}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                  <div>
+                    <span style={{fontSize:14,fontWeight:700,color:"#EDE5D8"}}>ออเดอร์ {r.orderNo}</span>
+                    <span style={{fontSize:11,color:"#7A6E5E",marginLeft:8}}>โต๊ะ {r.table} • รอบ {r.rNo}</span>
+                  </div>
+                  <span style={{background:"#1f1b14",color:"#C9A96E",fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:5,border:"1px solid #2A2520",textTransform:"uppercase",letterSpacing:".05em"}}>{statusLabel[r.status]||r.status}</span>
+                </div>
+                <div style={{marginBottom:10}}>
+                  {r.items.map((it,ii)=>(
+                    <div key={ii} style={{display:"flex",justifyContent:"space-between",fontSize:12,color:"#EDE5D8",padding:"3px 0",borderBottom:"1px solid #1f1b14"}}>
+                      <span>{it.emoji} {it.name} × {it.qty}</span>
+                      <span style={{color:"#C9A96E",fontWeight:600}}>฿{it.free?0:it.totalPrice*it.qty}</span>
+                    </div>
+                  ))}
+                </div>
+                {nextStatus[r.status]&&(
+                  <button onClick={()=>onAdvance(r.orderNo,r.rNo,nextStatus[r.status])} style={{width:"100%",background:"#C9A96E",color:"#080706",border:0,borderRadius:8,padding:"11px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"Prompt"}}>
+                    {nextLabel[r.status]} →
+                  </button>
+                )}
+              </div>
+            ))
+          }
+        </>)}
+
+        {tab==="redeem"&&(<>
+          <div style={{fontSize:11,color:"#7A6E5E",letterSpacing:".15em",textTransform:"uppercase",marginBottom:14}}>คิว Redeem ที่รอยืนยัน</div>
+          {(redeemQueue||[]).length===0
+            ?<div style={{textAlign:"center",marginTop:40,color:"#7A6E5E",fontSize:13}}>ไม่มีคิว Redeem</div>
+            :(redeemQueue||[]).map((req,i)=>(
+              <div key={i} style={{background:"#151210",border:"1px solid #242018",borderRadius:12,padding:"14px",marginBottom:10}}>
+                <div style={{fontSize:13,fontWeight:700,color:"#EDE5D8",marginBottom:4}}>{req.memberName} — {req.memberNo}</div>
+                <div style={{fontSize:11,color:"#7A6E5E",marginBottom:10}}>ต้องการรับ: อิตาเลียนโซดา • {req.requestedAt}</div>
+                <button onClick={()=>onApproveRedeem(req.id)} style={{width:"100%",background:"#C9A96E",color:"#080706",border:0,borderRadius:8,padding:"11px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"Prompt"}}>
+                  ✓ อนุมัติ — สแกนแล้ว
+                </button>
+              </div>
+            ))
+          }
+          <div style={{background:"#1f1b14",borderRadius:10,padding:"12px 14px",marginTop:16,border:"1px solid #242018"}}>
+            <div style={{fontSize:11,color:"#C9A96E",fontWeight:700,letterSpacing:".1em",textTransform:"uppercase",marginBottom:6}}>วิธีใช้</div>
+            <div style={{fontSize:11,color:"#7A6E5E",lineHeight:1.7}}>
+              1. ลูกค้าแสดง QR ใน tab "สิทธิ์ของฉัน"<br/>
+              2. Staff กด "อนุมัติ" ที่หน้าจอนี้<br/>
+              3. ระบบจะส่งไปให้ลูกค้าเลือกรส
+            </div>
+          </div>
+        </>)}
+
+        {tab==="bookings"&&(<>
+          <div style={{fontSize:11,color:"#7A6E5E",letterSpacing:".15em",textTransform:"uppercase",marginBottom:14}}>การจองวันนี้</div>
+          {(bookings||[]).length===0
+            ?<div style={{textAlign:"center",marginTop:40,color:"#7A6E5E",fontSize:13}}>ยังไม่มีการจองวันนี้</div>
+            :(bookings||[]).map((b,i)=>(
+              <div key={i} style={{background:"#151210",border:"1px solid #242018",borderRadius:12,padding:"14px",marginBottom:10}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:700,color:"#EDE5D8"}}>{b.name}</div>
+                    <div style={{fontSize:11,color:"#7A6E5E",marginTop:2}}>{b.zone} • {b.ppl} คน • {b.time} น.</div>
+                    <div style={{fontSize:10,color:"#7A6E5E",marginTop:2}}>โทร {b.phone}</div>
+                  </div>
+                  <div style={{background:"#1f1b14",color:"#C9A96E",fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:5,border:"1px solid #2A2520",letterSpacing:".05em"}}>{b.code}</div>
+                </div>
+              </div>
+            ))
+          }
+        </>)}
+
+      </div>
+    </div>
+  );
+}
+
 /* ==================== APP ==================== */
 export default function App(){
   const[mode,setMode]=useState("night");
@@ -187,6 +331,14 @@ export default function App(){
   const[table,setTable]=useState(null);
   const[addingMore,setAddingMore]=useState(false);
   const[customizing,setCustomizing]=useState(null);
+  /* S1/S3: Staff screen */
+  const[staffOpen,setStaffOpen]=useState(false);
+  const[bookingList,setBookingList]=useState([]);
+  const[redeemQueue,setRedeemQueue]=useState([]);
+  /* P4: QR timer */
+  const[qrTimer,setQrTimer]=useState(90);
+  const[qrExpired,setQrExpired]=useState(false);
+
   const isActive=memberStatus==="active";
   const isPending=memberStatus==="pending_payment";
   const night=mode==="night";
@@ -197,6 +349,15 @@ export default function App(){
 
   const lastRound=order?order.rounds[order.rounds.length-1]:null;
   const lastStatus=lastRound?.status;
+
+  /* S2: Beep when new order arrives */
+  const prevRoundCount=React.useRef(0);
+  useEffect(()=>{
+    if(!order)return;
+    if(order.rounds.length>prevRoundCount.current){playBeep(880,0.35,0.3);prevRoundCount.current=order.rounds.length;}
+  },[order]);
+
+  /* Auto-advance demo order statuses */
   useEffect(()=>{
     if(!order||!lastRound)return;
     const adv=(next,ms)=>{const t=setTimeout(()=>setOrder(o=>{if(!o)return o;const rounds=o.rounds.map((r,i)=>i===o.rounds.length-1?{...r,status:next}:r);return{...o,rounds};}),ms);return()=>clearTimeout(t);};
@@ -211,6 +372,14 @@ export default function App(){
       if(lastStatus==="ready")return adv("completed",4000);
     }
   },[order,lastStatus,night]);
+
+  /* P4: QR countdown timer */
+  useEffect(()=>{
+    if(redeemStep!=="qr"){setQrTimer(90);setQrExpired(false);return;}
+    setQrTimer(90);setQrExpired(false);
+    const iv=setInterval(()=>setQrTimer(t=>{if(t<=1){setQrExpired(true);clearInterval(iv);return 0;}return t-1;}),1000);
+    return()=>clearInterval(iv);
+  },[redeemStep]);
 
   const newUid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   const getMenuQty=(menuId)=>cart.filter(i=>i.menuId===menuId&&!i.free).reduce((s,i)=>s+i.qty,0);
@@ -252,9 +421,28 @@ export default function App(){
     const initStatus=night?"waiting":"waiting_pos";
     setOrder(o=>{
       const round={rNo:o?o.rounds.length+1:1,items,status:initStatus};
-      return o?{...o,rounds:[...o.rounds,round]}:{no:"A-"+(140+Math.floor(Math.random()*50)),rounds:[round]};
+      const newOrder=o?{...o,rounds:[...o.rounds,round]}:{no:"A-"+(140+Math.floor(Math.random()*50)),table,rounds:[round]};
+      return newOrder;
     });
     setCart([]);setCartOpen(false);setAddingMore(false);setPage("order");
+  };
+
+  /* Staff: advance a specific order round to next status */
+  const staffAdvance=(orderNo,rNo,newStatus)=>{
+    setOrder(o=>{
+      if(!o||o.no!==orderNo)return o;
+      const rounds=o.rounds.map(r=>r.rNo===rNo?{...r,status:newStatus}:r);
+      return{...o,rounds};
+    });
+    playBeep(660,0.2,0.2);
+  };
+
+  /* Staff: approve redeem request */
+  const staffApproveRedeem=(reqId)=>{
+    setRedeemQueue(q=>q.filter(r=>r.id!==reqId));
+    setRedeemStep("flavor");
+    playBeep(1100,0.25,0.2);
+    setToast("อนุมัติ Redeem แล้ว — ลูกค้าเลือกรสได้เลย");
   };
   const grandTotal=order?order.rounds.reduce((s,r)=>s+r.items.reduce((a,it)=>a+it.totalPrice*it.qty,0),0):0;
   const nextMs=MILESTONES.find(m=>m.at>memberInfo.visits)||MILESTONES[MILESTONES.length-1];
@@ -634,7 +822,33 @@ export default function App(){
       <div className="qrcard">
         {/* FIX 5.2: Title updated */}
         {redeemStep==="idle"&&(<><div className="privE">🥤</div><h3>อิตาเลียนโซดาฟรี 1 แก้ว</h3><p>เงื่อนไข: ซื้อเมนูราคาเต็ม 1 รายการ</p>{sodaRedeemed?<button className="ghost" disabled style={{opacity:.5}}>ใช้แล้ว ✓ ({sodaFlavor})</button>:<button className="cta" onClick={()=>setRedeemStep("qr")}>รับสิทธิ์ — แสดง QR</button>}</>)}
-        {redeemStep==="qr"&&(<><h3>ยื่น QR ให้พนักงาน</h3><div style={{display:"flex",justifyContent:"center",margin:"14px 0"}}><FakeQR/></div><button className="cta" onClick={()=>setRedeemStep("flavor")}>(เดโม) พนักงานสแกนแล้ว</button><button className="ghost" onClick={()=>setRedeemStep("idle")}>ปิด</button></>)}
+        {redeemStep==="qr"&&(<>
+          <h3>ยื่น QR ให้พนักงาน</h3>
+          <div style={{display:"flex",justifyContent:"center",margin:"14px 0",position:"relative"}}>
+            <div style={{position:"relative"}}>
+              <FakeQR/>
+              {qrExpired&&<div style={{position:"absolute",inset:0,background:"rgba(8,7,6,.88)",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8}}>
+                <span style={{fontSize:28}}>⏱️</span>
+                <span style={{fontFamily:"Prompt",fontSize:13,fontWeight:700,color:"var(--gold)"}}>QR หมดอายุแล้ว</span>
+              </div>}
+            </div>
+          </div>
+          {!qrExpired
+            ?<div style={{textAlign:"center",fontSize:12,color:"var(--muted)",marginBottom:8}}>หมดอายุใน <b style={{color:qrTimer<=15?"var(--danger)":"var(--gold)",fontFamily:"Prompt"}}>{qrTimer}s</b></div>
+            :<button className="cta" style={{marginBottom:8}} onClick={()=>setRedeemStep("qr")}>สร้าง QR ใหม่</button>
+          }
+          {/* S3: Push to staff queue — ของจริง staff กด approve จาก staff screen */}
+          <button className="cta" disabled={qrExpired} style={{opacity:qrExpired?.4:1}} onClick={()=>{
+            const reqId=newUid();
+            setRedeemQueue(q=>[...q,{id:reqId,memberName:memberInfo.nickname||"สมาชิก",memberNo:memberInfo.memberNo||"SHK-???",requestedAt:new Date().toLocaleTimeString("th-TH",{hour:"2-digit",minute:"2-digit"})}]);
+            setToast("ส่งคำขอไปที่ Staff Screen แล้ว รอพนักงานอนุมัติ");
+          }}>ส่งให้พนักงานอนุมัติ</button>
+          <button className="ghost" style={{marginTop:6}} onClick={()=>{
+            // Demo shortcut: simulate staff approval immediately
+            setRedeemStep("flavor");
+          }}>(เดโม) พนักงานสแกนแล้ว — ข้ามสู่เลือกรส</button>
+          <button className="ghost" onClick={()=>setRedeemStep("idle")}>ยกเลิก</button>
+        </>)}
         {/* FIX 5.3: Flavor heading updated */}
         {redeemStep==="flavor"&&(<><div className="privE">🥤</div><h3>เลือกรสอิตาเลียนโซดา</h3><div className="zonebtns" style={{gridTemplateColumns:"1fr 1fr 1fr",marginTop:10}}>{["แดงมะนาว","ลิ้นจี่","ส้ม"].map(f=><button key={f} className={sodaFlavor===f?"on":""} onClick={()=>setSodaFlavor(f)}>{f}</button>)}</div><button className="cta" style={{opacity:sodaFlavor?1:.45}} disabled={!sodaFlavor} onClick={()=>{setSodaRedeemed(true);setMemberInfo(m=>({...m,visits:m.visits+1}));addFreeSoda(sodaFlavor);
           // FIX 5.4: Toast text updated
@@ -733,7 +947,10 @@ export default function App(){
       <div className="notice-box">⏰ <b>นโยบาย No-show:</b> เก็บที่นั่งให้ 30 นาที หลังจากนั้นอาจถูกยกเลิกอัตโนมัติ</div>
       <button className="cta" style={{opacity:valid?1:.45}} disabled={!valid} onClick={()=>{
         const dateLabel=dateOpts.find(d=>d.value===date)?.label||date;
-        setResv({zone,ppl,time,date,dateLabel,duration,name:guestName.trim(),code:genBookingCode()});
+        const code=genBookingCode();
+        setResv({zone,ppl,time,date,dateLabel,duration,name:guestName.trim(),code});
+        // Add to staff booking list
+        setBookingList(bl=>[...bl,{zone,ppl,time,date,dateLabel,duration,name:guestName.trim(),phone:guestPhone,code}]);
       }}>ยืนยันการจอง</button>
     </div>);
   };
@@ -751,9 +968,30 @@ export default function App(){
     </div>);
   };
 
+  /* Logo tap counter for staff screen */
+  const logoTaps=React.useRef(0);
+  const logoTimer=React.useRef(null);
+  const handleLogoTap=()=>{
+    logoTaps.current+=1;
+    clearTimeout(logoTimer.current);
+    logoTimer.current=setTimeout(()=>{logoTaps.current=0;},1200);
+    if(logoTaps.current>=3){logoTaps.current=0;setStaffOpen(true);}
+  };
+
   /* ==================== RENDER ==================== */
   return(<div className="app"><style>{css}</style>
-    <header className="topbar"><div className="logo">SAHAKON<small>CAFE • WORK • CHILL</small></div><div className="modepill"><button className={!night?"on":""} onClick={()=>setMode("day")}>☀️ กลางวัน</button><button className={night?"on":""} onClick={()=>setMode("night")}>🌙 กลางคืน</button></div></header>
+    {staffOpen&&<StaffScreen
+      orders={order?[order]:[]}
+      onAdvance={staffAdvance}
+      redeemQueue={redeemQueue}
+      onApproveRedeem={staffApproveRedeem}
+      bookings={bookingList}
+      onClose={()=>setStaffOpen(false)}
+    />}
+    <header className="topbar">
+      <div className="logo" onClick={handleLogoTap} style={{cursor:"default",userSelect:"none"}}>SAHAKON<small>CAFE • WORK • CHILL</small></div>
+      <div className="modepill"><button className={!night?"on":""} onClick={()=>setMode("day")}>☀️ กลางวัน</button><button className={night?"on":""} onClick={()=>setMode("night")}>🌙 กลางคืน</button></div>
+    </header>
     {page==="home"&&<Home/>}{page==="order"&&<Order/>}{page==="redeem"&&<Redeem/>}
     {page==="reserve"&&<Reserve/>}{page==="profile"&&<Profile/>}
     {page==="register"&&<Register/>}{page==="pending"&&<Pending/>}
@@ -763,11 +1001,18 @@ export default function App(){
       {cart.map(ci=>(<div className="crow" key={ci.uid}>
         <FoodImg id={ci.menuId} emoji={ci.emoji} size={40}/>
         <div style={{flex:1}}><b>{ci.name}</b>
-          {/* FIX 4.4 */}
           {ci.free?<small style={{color:"var(--gold)",fontWeight:600,display:"block"}}>สิทธิ์ Founder Member — ฟรี</small>:<small style={{display:"block"}}>฿{ci.totalPrice}</small>}
           {optionSummary(ci)&&<div className="optline">{optionSummary(ci)}</div>}
         </div>
-        {ci.free?<b style={{fontFamily:"Prompt",color:"var(--gold)"}}>฿0</b>:<div className="qty"><button onClick={()=>updateCartQty(ci.uid,-1)}>−</button><b>{ci.qty}</b><button className="add" onClick={()=>updateCartQty(ci.uid,1)}>+</button></div>}
+        {ci.free
+          ?<button onClick={()=>setCart(c=>c.filter(i=>i.uid!==ci.uid))} style={{border:0,background:"transparent",color:"var(--danger)",fontSize:18,cursor:"pointer",padding:"4px 6px",flexShrink:0}}>✕</button>
+          :<div className="qty">
+            <button onClick={()=>updateCartQty(ci.uid,-1)}>−</button>
+            <b>{ci.qty}</b>
+            <button className="add" onClick={()=>updateCartQty(ci.uid,1)}>+</button>
+            <button onClick={()=>setCart(c=>c.filter(i=>i.uid!==ci.uid))} style={{border:0,background:"transparent",color:"var(--danger)",fontSize:16,cursor:"pointer",padding:"4px 4px",marginLeft:2,flexShrink:0}}>✕</button>
+          </div>
+        }
       </div>))}
       <div style={{display:"flex",justifyContent:"space-between",paddingTop:14,fontFamily:"Prompt",fontWeight:700,fontSize:15}}><span>รวม</span><span style={{color:"var(--gold)"}}>฿{cartTotal}</span></div>
       {hasFreeSodaInCart&&paidCount===0&&<p style={{fontSize:11,color:"var(--danger)",marginTop:8}}>⚠️ เลือกเมนูราคาเต็มอีก 1 รายการก่อนยืนยัน</p>}
