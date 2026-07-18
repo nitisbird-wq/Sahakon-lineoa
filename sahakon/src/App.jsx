@@ -80,69 +80,177 @@ function genBookingCode(){
   return`BK-${dateStr}-${seq}`;
 }
 
-/* ==================== MENU DATA ==================== */
-// FIX 4.3: Changed soda descriptions to mention "อิตาเลียนโซดา" and "สิทธิ์ Founder Member"
+/* ==================== MENU DATA (Real menu v2 — SAHAKON) ==================== */
 const MENU = [
-  {id:"d1",cat:"rice",name:"ข้าวกะเพราหมูสับ",desc:"ผัดกะเพราใบโหระพา",price:79,emoji:"🍛",tag:"ขายดี",cust:true,custOpts:{spicy:true,egg:true,extra:true}},
-  {id:"d2",cat:"rice",name:"ข้าวหมูทอดกระเทียม",desc:"หอมกระเทียมเจียว",price:79,emoji:"🍛",cust:true,custOpts:{spicy:false,egg:true,extra:true}},
-  {id:"d3",cat:"rice",name:"ข้าวผัดหมู",desc:"ผัดร้อนๆ จากกระทะ",price:79,emoji:"🍚",cust:true,custOpts:{spicy:true,egg:true,extra:true}},
-  {id:"d4",cat:"rice",name:"ผัดพริกแกงหมู",desc:"เผ็ดกลาง ราดข้าว",price:79,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
-  {id:"d5",cat:"rice",name:"คะน้าหมูกรอบ",desc:"หมูกรอบทอดใหม่",price:89,emoji:"🥬",cust:true,custOpts:{spicy:false,egg:true,extra:true}},
-  {id:"c1",cat:"drink",name:"อเมริกาโน่",desc:"ร้อน / เย็น",price:50,emoji:"☕",tag:"ขายดี"},
-  {id:"c2",cat:"drink",name:"ลาเต้",desc:"ร้อน / เย็น",price:55,emoji:"☕"},
-  {id:"c3",cat:"drink",name:"เอสเพรสโซ่",desc:"เข้มถึงใจ",price:45,emoji:"☕"},
-  {id:"c4",cat:"drink",name:"มอคค่า",desc:"ช็อกโกแลตแท้",price:60,emoji:"☕"},
-  {id:"c5",cat:"drink",name:"คาปูชิโน่",desc:"ฟองนมเนียน",price:55,emoji:"☕"},
-  {id:"t1",cat:"drink",name:"ชาไทย",desc:"เข้มข้นสูตรร้าน",price:50,emoji:"🧋"},
-  {id:"t2",cat:"drink",name:"ชาเขียว",desc:"หอมมัทฉะ",price:55,emoji:"🍵"},
-  {id:"t3",cat:"drink",name:"โกโก้",desc:"โกโก้แท้ 100%",price:55,emoji:"🍫"},
-  // FIX 4.3: Updated soda descriptions
-  {id:"s1",cat:"drink",name:"อิตาเลียนโซดาแดงมะนาว",desc:"สิทธิ์ Founder Member ฟรีวันละ 1 แก้ว",price:45,emoji:"🥤",tag:"Member"},
-  {id:"s2",cat:"drink",name:"อิตาเลียนโซดาลิ้นจี่",desc:"สิทธิ์ Founder Member ฟรีวันละ 1 แก้ว",price:45,emoji:"🥤"},
-  {id:"s3",cat:"drink",name:"อิตาเลียนโซดาส้ม",desc:"สิทธิ์ Founder Member ฟรีวันละ 1 แก้ว",price:45,emoji:"🥤"},
-  {id:"bk1",cat:"bakery",name:"แซนด์วิชแฮมชีส",desc:"อบร้อน ชีสยืด",price:65,emoji:"🥪"},
-  {id:"bk2",cat:"bakery",name:"ครัวซองต์เนยสด",desc:"อบใหม่ทุกเช้า",price:55,emoji:"🥐"},
-  {id:"bk3",cat:"bakery",name:"บราวนี่ช็อกโกแลต",desc:"หนึบ เข้มโกโก้",price:45,emoji:"🍰"},
-  {id:"a1",cat:"snack",name:"เฟรนช์ฟราย",desc:"ซอส 2 อย่าง",price:69,emoji:"🍟"},
-  {id:"a2",cat:"snack",name:"นักเก็ตไก่",desc:"10 ชิ้น",price:69,emoji:"🍗"},
-  {id:"a3",cat:"snack",name:"ไก่สติ๊ก",desc:"กรอบนอกนุ่มใน",price:75,emoji:"🍗"},
-  {id:"a4",cat:"snack",name:"เอ็นไก่ทอด",desc:"คู่เบียร์เย็นๆ",price:79,emoji:"🍢"},
-  {id:"set1",cat:"set",name:"เซ็ตจานเดียว+น้ำ",desc:"อาหารตามสั่ง 1 + น้ำ 1",price:89,emoji:"🍱",tag:"คุ้ม"},
-  {id:"set2",cat:"set",name:"เซ็ตกาแฟ+เบเกอรี่",desc:"กาแฟ 1 + เบเกอรี่ 1",price:79,emoji:"☕",tag:"คุ้ม"},
-  {id:"mj-s",cat:"moojum",name:"หมูจุ่ม Size S",desc:"1-2 คน • น้ำซุปสมุนไพร",price:99,emoji:"🍲",tag:"ขายดี"},
-  {id:"mj-m",cat:"moojum",name:"หมูจุ่ม Size M",desc:"3-4 คน • จัดเต็มกว่า",price:199,emoji:"🍲",tag:"พระเอก"},
+  // ── กาแฟ ──
+  {id:"cf1",cat:"coffee",name:"Americano",desc:"ร้อน / เย็น",price:50,emoji:"☕",tag:"ขายดี"},
+  {id:"cf2",cat:"coffee",name:"Americano น้ำผึ้งมะนาว",desc:"เปรี้ยวหวานสดชื่น",price:65,emoji:"☕"},
+  {id:"cf3",cat:"coffee",name:"Americano น้ำผึ้ง",desc:"หวานนุ่มจากน้ำผึ้งแท้",price:60,emoji:"☕"},
+  {id:"cf4",cat:"coffee",name:"Americano ส้ม",desc:"ผสมน้ำส้มสด",price:60,emoji:"☕"},
+  {id:"cf5",cat:"coffee",name:"Espresso",desc:"เข้มถึงใจ short shot",price:50,emoji:"☕"},
+  {id:"cf6",cat:"coffee",name:"Espresso ส้ม",desc:"เปรี้ยวหอม",price:60,emoji:"☕"},
+  {id:"cf7",cat:"coffee",name:"Espresso มะพร้าว",desc:"หอมมะพร้าว",price:60,emoji:"☕"},
+  {id:"cf8",cat:"coffee",name:"Latte",desc:"นมสดเข้มข้น ร้อน/เย็น",price:50,emoji:"☕"},
+  {id:"cf9",cat:"coffee",name:"Mocha",desc:"ช็อกโกแลตแท้",price:50,emoji:"☕"},
+  {id:"cf10",cat:"coffee",name:"Cappuccino",desc:"ฟองนมเนียน",price:50,emoji:"☕"},
+
+  // ── เครื่องดื่ม: ชา ──
+  {id:"t1",cat:"drink",name:"ชาไทย",desc:"เข้มข้นสูตรร้าน",price:50,emoji:"🧋",tag:"ขายดี"},
+  {id:"t2",cat:"drink",name:"ชาเขียว",desc:"หอมอ่อนๆ",price:50,emoji:"🍵"},
+  {id:"t3",cat:"drink",name:"ชามะนาว",desc:"เปรี้ยวสดชื่น",price:50,emoji:"🍋"},
+  {id:"t4",cat:"drink",name:"โกโก้",desc:"โกโก้แท้ 100%",price:50,emoji:"🍫"},
+  // นมสด
+  {id:"m1",cat:"drink",name:"ชาไทยนมสด",desc:"ชาไทย + นมสด",price:50,emoji:"🧋"},
+  {id:"m2",cat:"drink",name:"ชาเขียวนมสด",desc:"มัทฉะ + นมสด",price:60,emoji:"🍵"},
+  {id:"m3",cat:"drink",name:"โกโก้นมสด",desc:"เข้มข้น หวานมัน",price:50,emoji:"🍫"},
+  {id:"m4",cat:"drink",name:"สตรอว์เบอร์รี่นมสด",desc:"สดชื่น หอมหวาน",price:50,emoji:"🍓"},
+  {id:"m5",cat:"drink",name:"นมสด",desc:"นมโคสดแท้",price:50,emoji:"🥛"},
+  // อิตาเลียนโซดา
+  {id:"s1",cat:"drink",name:"อิตาเลียนโซดาแดงมะนาว",desc:"Founder Member ดื่มฟรีทั้งปี วันละ 1 แก้ว",price:50,emoji:"🥤",tag:"Member"},
+  {id:"s2",cat:"drink",name:"อิตาเลียนโซดาลิ้นจี่",desc:"Founder Member ดื่มฟรีทั้งปี วันละ 1 แก้ว",price:50,emoji:"🥤"},
+  {id:"s3",cat:"drink",name:"อิตาเลียนโซดาส้ม",desc:"Founder Member ดื่มฟรีทั้งปี วันละ 1 แก้ว",price:50,emoji:"🥤"},
+  {id:"s4",cat:"drink",name:"อิตาเลียนโซดากีวี",desc:"หวานอมเปรี้ยว",price:50,emoji:"🥤"},
+  {id:"s5",cat:"drink",name:"อิตาเลียนโซดาองุ่น",desc:"หอมหวาน",price:50,emoji:"🥤"},
+  {id:"s6",cat:"drink",name:"อิตาเลียนโซดาบลูฮาวาย",desc:"สีฟ้าสวย",price:50,emoji:"🥤"},
+  {id:"s7",cat:"drink",name:"อิตาเลียนโซดาพันช์",desc:"หลายรสรวมกัน",price:50,emoji:"🥤"},
+  {id:"s8",cat:"drink",name:"อิตาเลียนโซดาสับปะรด",desc:"หอมเปรี้ยว",price:50,emoji:"🥤"},
+  {id:"s9",cat:"drink",name:"อิตาเลียนโซดาแอปเปิ้ล",desc:"สดชื่นหวาน",price:50,emoji:"🥤"},
+  // น้ำอัดลม / มิกเซอร์
+  {id:"sd1",cat:"drink",name:"โค้กกระป๋อง",desc:"เย็นจัด",price:20,emoji:"🥤"},
+  {id:"sd2",cat:"drink",name:"เป๊ปซี่กระป๋อง",desc:"เย็นจัด",price:20,emoji:"🥤"},
+  {id:"sd3",cat:"drink",name:"แฟนต้า",desc:"น้ำแดง / น้ำเขียว",price:20,emoji:"🥤"},
+  {id:"sd4",cat:"drink",name:"น้ำสิงห์",desc:"น้ำดื่มบรรจุขวด",price:20,emoji:"💧"},
+
+  // ── ตามสั่ง (ราดข้าว) ──
+  {id:"r1",cat:"rice",name:"ผัดกะเพราหมูสับ",desc:"ใบโหระพา ราดข้าว",price:69,emoji:"🍛",tag:"ขายดี",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r2",cat:"rice",name:"ผัดกะเพราหมูชิ้น",desc:"ชิ้นใหญ่จุใจ",price:69,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r3",cat:"rice",name:"ผัดกะเพราหมูกรอบ",desc:"หมูกรอบทอดใหม่",price:79,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r4",cat:"rice",name:"ผัดกะเพราทะเล",desc:"กุ้ง / หมึก / ทะเลรวม",price:79,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r5",cat:"rice",name:"ทอดกระเทียมหมู",desc:"หอมกระเทียมเจียว",price:69,emoji:"🍛",cust:true,custOpts:{spicy:false,egg:true,extra:false}},
+  {id:"r6",cat:"rice",name:"ทอดกระเทียมหมูกรอบ",desc:"กรอบ หอม",price:79,emoji:"🍛",cust:true,custOpts:{spicy:false,egg:true,extra:false}},
+  {id:"r7",cat:"rice",name:"ผัดคะน้าหมูกรอบ",desc:"หมูกรอบทอดใหม่",price:79,emoji:"🥬",cust:true,custOpts:{spicy:false,egg:true,extra:false}},
+  {id:"r8",cat:"rice",name:"ผัดพริกแกงหมูชิ้น",desc:"เผ็ดหอม ราดข้าว",price:69,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"r9",cat:"rice",name:"ผัดพริกแกงทะเล",desc:"เผ็ดจัด ทะเลรวม",price:79,emoji:"🍛",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"r10",cat:"rice",name:"ข้าวผัดหมู",desc:"ผัดร้อนๆ จากกระทะ",price:69,emoji:"🍚",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r11",cat:"rice",name:"ข้าวผัดทะเล",desc:"กุ้ง / หมึก / ทะเลรวม",price:79,emoji:"🍚",cust:true,custOpts:{spicy:true,egg:true,extra:false}},
+  {id:"r12",cat:"rice",name:"ผัดผงกะหรี่หมู",desc:"หอมกะหรี่ ราดข้าว",price:69,emoji:"🍛",cust:true,custOpts:{spicy:false,egg:false,extra:false}},
+  {id:"r13",cat:"rice",name:"ผัดไข่เค็มทะเล",desc:"หมึก / กุ้ง / ทะเลรวม",price:79,emoji:"🍳"},
+
+  // ── ต้ม / สุกี้ ──
+  {id:"sp1",cat:"soup",name:"สุกี้น้ำหมูชิ้น",desc:"น้ำซุปใส หอม",price:69,emoji:"🍜"},
+  {id:"sp2",cat:"soup",name:"สุกี้น้ำทะเล",desc:"กุ้ง / หมึก / ทะเลรวม",price:79,emoji:"🍜",tag:"ขายดี"},
+  {id:"sp3",cat:"soup",name:"สุกี้แห้งหมู",desc:"ผัดแห้ง หอมพริก",price:69,emoji:"🍜"},
+  {id:"sp4",cat:"soup",name:"ต้มยำน้ำข้นกระดูกหมู",desc:"เข้มข้น เผ็ดหอม",price:89,emoji:"🍲"},
+  {id:"sp5",cat:"soup",name:"ต้มยำน้ำข้นทะเล",desc:"ทะเลรวม น้ำซุปเข้มข้น",price:99,emoji:"🍲"},
+  {id:"sp6",cat:"soup",name:"ต้มแซ่บกระดูกหมู",desc:"เผ็ดเปรี้ยวจัด",price:89,emoji:"🍲"},
+  {id:"sp7",cat:"soup",name:"ต้มจืดหมู",desc:"อ่อนโยน เบาเนื้อ",price:79,emoji:"🍲"},
+
+  // ── ของทานเล่น ──
+  {id:"a1",cat:"snack",name:"เฟรนช์ฟรายส์",desc:"กรอบนอกนุ่มใน ซอส 2 อย่าง",price:69,emoji:"🍟",tag:"ขายดี"},
+  {id:"a2",cat:"snack",name:"นักเก็ตไก่",desc:"10 ชิ้น ทอดสด",price:69,emoji:"🍗"},
+  {id:"a3",cat:"snack",name:"ไก่สติ๊กทอด",desc:"กรอบนอกนุ่มใน",price:69,emoji:"🍗"},
+  {id:"a4",cat:"snack",name:"รวมเล่น 3 อย่าง",desc:"เฟรนช์ฟรายส์ + นักเก็ต + ไก่สติ๊ก",price:99,emoji:"🍱",tag:"คุ้ม"},
+  {id:"a5",cat:"snack",name:"บอลชีส",desc:"ชีสยืด กัดแล้วอร่อย",price:69,emoji:"🧀"},
+  {id:"a6",cat:"snack",name:"ฮอตดอกแดงทอด",desc:"กรอบนอก หอม",price:69,emoji:"🌭"},
+  {id:"a7",cat:"snack",name:"ปูอัดทอด",desc:"กรอบอร่อย",price:69,emoji:"🦀"},
+  {id:"a8",cat:"snack",name:"ลูกชิ้นหน้าโรงเรียน",desc:"จิ้มซอสพริก",price:79,emoji:"🍢"},
+  {id:"a9",cat:"snack",name:"เปาะเปี๊ยะทอด",desc:"กรอบ หอม ไส้อร่อย",price:89,emoji:"🥟"},
+  {id:"a10",cat:"snack",name:"เอ็นไก่ทอด",desc:"คู่เบียร์เย็นๆ",price:89,emoji:"🍢"},
+  {id:"a11",cat:"snack",name:"ปีกไก่ทอด",desc:"กรอบทุกซอก",price:89,emoji:"🍗"},
+  {id:"a12",cat:"snack",name:"สามชั้นทอดน้ำปลา",desc:"มันกรอบ หอม",price:89,emoji:"🥓"},
+  {id:"a13",cat:"snack",name:"กระดูกอ่อนทอด",desc:"หนึบกรอบ",price:89,emoji:"🍖"},
+
+  // ── หมูจุ่ม (ชุด) ──
+  {id:"mj-s",cat:"moojum",name:"หมูจุ่ม Size S",desc:"1-2 คน • หมูหมัก + สามชั้น + ผักรวม",price:99,emoji:"🍲",tag:"ขายดี"},
+  {id:"mj-m",cat:"moojum",name:"หมูจุ่ม Size M",desc:"3-4 คน • เพิ่มสันนอก + ผักรวม M",price:199,emoji:"🍲",tag:"พระเอก"},
   {id:"mj-l",cat:"moojum",name:"หมูจุ่ม Size L",desc:"5-6 คน • จัดเต็มทั้งโต๊ะ",price:299,emoji:"🍲"},
-  {id:"i1",cat:"isan",name:"ลาบหมู",desc:"เผ็ดสั่งได้",price:79,emoji:"🌶️",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
-  {id:"i2",cat:"isan",name:"น้ำตกหมู",desc:"ย่างเตาถ่าน",price:79,emoji:"🥩",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
-  {id:"i3",cat:"isan",name:"ตับหวาน",desc:"ลวกกำลังดี",price:79,emoji:"🥩"},
-  {id:"i4",cat:"isan",name:"ตำลาว",desc:"ปลาร้านัว",price:65,emoji:"🥗",tag:"ขายดี",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
-  {id:"i5",cat:"isan",name:"ตำไทย",desc:"หวานนำ ถั่วลิสง",price:65,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
-  {id:"b1",cat:"beer",name:"ช้าง",desc:"ขวดใหญ่ เย็นจัด",price:80,emoji:"🍺"},
+
+  // ── Add-on หมูจุ่ม ──
+  {id:"ao1",cat:"addon_mj",name:"หมูสามชั้นสไลด์",desc:"สไลด์บางมีมัน",price:50,emoji:"🥓"},
+  {id:"ao2",cat:"addon_mj",name:"สันนอกไม่ติดมัน",desc:"นุ่ม ไร้มัน",price:50,emoji:"🥩"},
+  {id:"ao3",cat:"addon_mj",name:"สันนอกติดมัน",desc:"ไขมันแทรก หอม",price:50,emoji:"🥩"},
+  {id:"ao4",cat:"addon_mj",name:"หมูหมัก",desc:"หมักซอสสูตรร้าน",price:50,emoji:"🥩",tag:"แนะนำ"},
+  {id:"ao5",cat:"addon_mj",name:"เนื้อออสเตรเลีย",desc:"พรีเมียม นุ่มมาก",price:50,emoji:"🥩"},
+  {id:"ao6",cat:"addon_mj",name:"ตับหมูสไลด์",desc:"ลวกสุกจิ้มน้ำจิ้ม",price:30,emoji:"🫀"},
+  {id:"ao7",cat:"addon_mj",name:"กุ้งขาว",desc:"สดทุกวัน",price:40,emoji:"🦐"},
+  {id:"ao8",cat:"addon_mj",name:"ปลาดอรี่",desc:"เนื้อนุ่ม",price:30,emoji:"🐟"},
+  {id:"ao9",cat:"addon_mj",name:"หมึกกรอบ",desc:"กรอบหนึบ",price:40,emoji:"🦑"},
+  {id:"ao10",cat:"addon_mj",name:"ผักบุ้ง",desc:"สดๆ จากตลาด",price:20,emoji:"🥬"},
+  {id:"ao11",cat:"addon_mj",name:"ผักกาดขาว",desc:"กรอบหวาน",price:20,emoji:"🥬"},
+  {id:"ao12",cat:"addon_mj",name:"ข้าวโพด",desc:"หวานนุ่ม",price:20,emoji:"🌽"},
+  {id:"ao13",cat:"addon_mj",name:"เห็ดออรินจิ",desc:"เนื้อเด้ง หอม",price:20,emoji:"🍄"},
+  {id:"ao14",cat:"addon_mj",name:"เห็ดเข็มทอง",desc:"เส้นเล็กกรอบ",price:20,emoji:"🍄"},
+  {id:"ao15",cat:"addon_mj",name:"วุ้นเส้น",desc:"เส้นใส",price:20,emoji:"🍜"},
+  {id:"ao16",cat:"addon_mj",name:"มาม่า",desc:"ยี่ห้อดัง",price:20,emoji:"🍜"},
+  {id:"ao17",cat:"addon_mj",name:"ไข่ไก่",desc:"ต้มหรือทอด",price:10,emoji:"🥚"},
+  {id:"ao18",cat:"addon_mj",name:"เต้าหู้ไข่สด",desc:"นุ่มหอม",price:30,emoji:"🟡"},
+  {id:"ao19",cat:"addon_mj",name:"ปูอัด",desc:"หวานกรอบ",price:30,emoji:"🦀"},
+  {id:"ao20",cat:"addon_mj",name:"ไส้กรอกหนังกรอบ",desc:"หนังกรอบ",price:30,emoji:"🌭"},
+
+  // ── อีสาน ──
+  {id:"i1",cat:"isan",name:"ลาบหมู",desc:"เผ็ดสั่งได้ หอมข้าวคั่ว",price:79,emoji:"🌶️",tag:"ขายดี",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"i2",cat:"isan",name:"ลาบเป็ด",desc:"เป็ดหั่นชิ้น",price:89,emoji:"🦆",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"i3",cat:"isan",name:"หมูน้ำตก",desc:"ย่างเตาถ่าน เผ็ดอร่อย",price:89,emoji:"🥩",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"i4",cat:"isan",name:"ตับหวาน",desc:"เลือกระดับความสุก",price:79,emoji:"🥩"},
+  {id:"i5",cat:"isan",name:"แกงอ่อมหมู",desc:"สมุนไพรเข้มข้น",price:89,emoji:"🍲"},
+
+  // ── ตำ ──
+  {id:"tm1",cat:"tam",name:"ตำลาว",desc:"ปลาร้านัว เผ็ดจัด",price:50,emoji:"🥗",tag:"ขายดี",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"tm2",cat:"tam",name:"ตำไทย",desc:"หวานนำ ถั่วลิสง",price:50,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"tm3",cat:"tam",name:"ตำซั่ว",desc:"เผ็ดจัด ปลาร้า",price:60,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"tm4",cat:"tam",name:"ตำป่า",desc:"เผ็ดมาก สมุนไพร",price:79,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"tm5",cat:"tam",name:"ตำข้าวโพดไข่เค็ม",desc:"หวาน มัน เค็ม",price:89,emoji:"🥗"},
+
+  // ── ย่าง/ทอด ──
+  {id:"gr1",cat:"grill",name:"คอหมูย่าง",desc:"ย่างเตาถ่าน หอมหวาน",price:89,emoji:"🔥",tag:"ขายดี"},
+  {id:"gr2",cat:"grill",name:"ไส้อ่อนย่าง",desc:"นุ่ม หอม ย่างสด",price:89,emoji:"🔥"},
+  {id:"gr3",cat:"grill",name:"ปีกไก่ทอด",desc:"กรอบทุกซอก",price:89,emoji:"🍗"},
+  {id:"gr4",cat:"grill",name:"สามชั้นทอดน้ำปลา",desc:"มันกรอบ หอม",price:89,emoji:"🥓"},
+  {id:"gr5",cat:"grill",name:"เอ็นไก่ทอด",desc:"หนึบ คู่เบียร์",price:89,emoji:"🍢"},
+  {id:"gr6",cat:"grill",name:"กระดูกอ่อนทอด",desc:"กรอบหนึบ",price:89,emoji:"🍖"},
+
+  // ── ยำ ──
+  {id:"y1",cat:"yum",name:"ยำ 2 อย่าง",desc:"เลือกได้เลย เผ็ดสั่งได้",price:79,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"y2",cat:"yum",name:"ยำ 3 อย่าง",desc:"เลือกวัตถุดิบได้เอง",price:89,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+  {id:"y3",cat:"yum",name:"ยำ 4 อย่าง",desc:"เพิ่มอย่างละ 10 บาท",price:99,emoji:"🥗",cust:true,custOpts:{spicy:true,egg:false,extra:false}},
+
+  // ── เบียร์ ──
+  {id:"b1",cat:"beer",name:"ช้างเขียว",desc:"ขวดใหญ่ เย็นจัด",price:80,emoji:"🍺",tag:"ขายดี"},
   {id:"b2",cat:"beer",name:"ลีโอ",desc:"ขวดใหญ่ เย็นจัด",price:80,emoji:"🍺"},
   {id:"b3",cat:"beer",name:"สิงห์",desc:"ขวดใหญ่ เย็นจัด",price:85,emoji:"🍺"},
-  {id:"ao1",cat:"addon_mj",name:"หมูสไลด์",desc:"เนื้อหมูสไลด์บาง",price:39,emoji:"🥩"},
-  {id:"ao2",cat:"addon_mj",name:"หมูหมักงา",desc:"หมักซอสงา หอม",price:49,emoji:"🥩"},
-  {id:"ao3",cat:"addon_mj",name:"สามชั้น",desc:"สไลด์มีมัน",price:49,emoji:"🥓"},
-  {id:"ao4",cat:"addon_mj",name:"ตับ",desc:"ลวกจิ้มน้ำจิ้ม",price:39,emoji:"🫀"},
-  {id:"ao5",cat:"addon_mj",name:"เบคอน",desc:"พรีเมียม",price:59,emoji:"🥓",tag:"แนะนำ"},
-  {id:"ao6",cat:"addon_mj",name:"ผักรวม",desc:"ผักบุ้ง+ผักกาด+เห็ด",price:39,emoji:"🥬"},
-  {id:"ao7",cat:"addon_mj",name:"เห็ดรวม",desc:"3 ชนิด",price:39,emoji:"🍄"},
-  {id:"ao8",cat:"addon_mj",name:"วุ้นเส้น",desc:"เส้นใส",price:15,emoji:"🍜"},
-  {id:"ao9",cat:"addon_mj",name:"มาม่า",desc:"ยี่ห้อดัง",price:15,emoji:"🍜"},
-  {id:"ao10",cat:"addon_mj",name:"บะหมี่",desc:"เส้นเหลือง",price:20,emoji:"🍝"},
+  {id:"b4",cat:"beer",name:"บัดไวเซอร์",desc:"พรีเมียม เย็นจัด",price:90,emoji:"🍺"},
+
+  // ── เครื่องดื่มถัง ──
+  {id:"bk1",cat:"bucket",name:"เครื่องดื่มถัง S",desc:"บลูฮาวาย / ไหมไทย / ลิ้นจี่ / สตรอว์เบอร์รี่ / องุ่น / แอปเปิ้ล",price:79,emoji:"🪣"},
+  {id:"bk2",cat:"bucket",name:"เครื่องดื่มถัง M",desc:"เลือกรสได้เลย",price:99,emoji:"🪣",tag:"แนะนำ"},
+  {id:"bk3",cat:"bucket",name:"เครื่องดื่มถัง L",desc:"คุ้มมาก สำหรับกลุ่ม",price:129,emoji:"🪣",tag:"คุ้ม"},
 ];
 
 const DAY_CATS=[
-  {id:"rice",name:"ตามสั่ง",emoji:"🍛"},{id:"drink",name:"เครื่องดื่ม",emoji:"☕"},
-  {id:"bakery",name:"เบเกอรี่",emoji:"🥐"},{id:"snack",name:"ทานเล่น",emoji:"🍟"},
-  {id:"set",name:"ชุดคุ้ม",emoji:"🍱"},
+  {id:"rice",name:"ตามสั่ง",emoji:"🍛"},
+  {id:"soup",name:"ต้ม/สุกี้",emoji:"🍜"},
+  {id:"snack",name:"ทานเล่น",emoji:"🍟"},
+  {id:"coffee",name:"กาแฟ",emoji:"☕"},
+  {id:"drink",name:"เครื่องดื่ม",emoji:"🥤"},
 ];
 const NIGHT_CATS=[
-  {id:"moojum",name:"หมูจุ่ม",emoji:"🍲"},{id:"isan",name:"อีสาน",emoji:"🌶️"},
-  {id:"snack",name:"ทานเล่น",emoji:"🍟"},{id:"drink",name:"เครื่องดื่ม",emoji:"🥤"},
-  {id:"beer",name:"เบียร์",emoji:"🍺"},{id:"addon_mj",name:"Add-on",emoji:"➕"},
+  {id:"moojum",name:"หมูจุ่ม",emoji:"🍲"},
+  {id:"addon_mj",name:"Add-on",emoji:"➕"},
+  {id:"isan",name:"อีสาน",emoji:"🌶️"},
+  {id:"tam",name:"ตำ",emoji:"🥗"},
+  {id:"grill",name:"ย่าง/ทอด",emoji:"🔥"},
+  {id:"yum",name:"ยำ",emoji:"🥗"},
+  {id:"snack",name:"ทานเล่น",emoji:"🍟"},
+  {id:"coffee",name:"กาแฟ",emoji:"☕"},
+  {id:"drink",name:"เครื่องดื่ม",emoji:"🥤"},
+  {id:"beer",name:"เบียร์",emoji:"🍺"},
+  {id:"bucket",name:"ถัง",emoji:"🪣"},
 ];
-const CAT_MODE={rice:"day",bakery:"day",set:"day",moojum:"night",isan:"night",beer:"night",addon_mj:"night",drink:"all",snack:"all"};
+const CAT_MODE={
+  rice:"day",soup:"day",
+  moojum:"night",isan:"night",tam:"night",grill:"night",yum:"night",beer:"night",addon_mj:"night",bucket:"night",
+  coffee:"all",drink:"all",snack:"all",
+};
 const MILESTONES=[{at:5,reward:"ท็อปปิ้ง/คุกกี้ฟรี"},{at:15,reward:"เครื่องดื่มฟรี"},{at:30,reward:"จานเดียวฟรี"},{at:60,reward:"หมูจุ่ม S ฟรี"},{at:100,reward:"หมูจุ่ม M + ต่อปี 2 ฟรี"}];
 const ZONES=[
   {id:"โซนทำงาน ชั้น 2",name:"Work Zone",sub:"ปลั๊กทุกโต๊ะ • WiFi แรง",cap:"1-4 คน",img:IMG.zone_work,day:true,night:false},
@@ -344,7 +452,7 @@ export default function App(){
   const night=mode==="night";
   const cats=night?NIGHT_CATS:DAY_CATS;
 
-  useEffect(()=>{setCat(night?"moojum":"rice");},[night]);
+  useEffect(()=>{setCat(night?"moojum":"rice");setCart([]);},[night]);
   useEffect(()=>{if(!toast)return;const t=setTimeout(()=>setToast(null),2400);return()=>clearTimeout(t);},[toast]);
 
   const lastRound=order?order.rounds[order.rounds.length-1]:null;
@@ -665,7 +773,8 @@ export default function App(){
     // FIX 1.5
     {id:"member",emoji:"💳",label:isActive?"สมาชิก ✓":"สมัครสมาชิก",sub:isActive?"ใช้งานอยู่":isPending?"รอชำระ":"299.-/ปี",go:isActive?"profile":isPending?"pending":"register"},
     {id:"profile",emoji:"👤",label:"โปรไฟล์",sub:isActive?"ประวัติ":"เฉพาะสมาชิก",go:"profile",locked:!isActive},
-    {id:"call",emoji:"🛎️",label:"เรียกพนักงาน",sub:"ขอน้ำซุป/เช็กบิล",action:"call"},
+    {id:"call",emoji:"🛎️",label:"เรียกพนักงาน",sub:"ขอน้ำซุป / เช็กบิล",action:"call"},
+    {id:"line",emoji:"💬",label:"LINE ร้าน",sub:"@sahakon",action:"line"},
   ];
   const Nav=()=><nav className="nav">{[{id:"home",e:"🏠",l:"หน้าแรก"},{id:"order",e:"🍽️",l:"สั่งอาหาร"},{id:"redeem",e:"🎁",l:"สิทธิ์ของฉัน"},{id:"profile",e:"👤",l:"โปรไฟล์"}].map(n=><button key={n.id} className={page===n.id?"on":""} onClick={()=>setPage(n.id)}><span className="ne">{n.e}</span>{n.l}</button>)}</nav>;
 
@@ -674,7 +783,7 @@ export default function App(){
     if(isActive)return(<div className="mcard"><div className="tier">SAHAKON • Founder Member</div><div className="nm">คุณ{memberInfo.nickname}</div><div className="mid">{memberInfo.memberNo} • สมาชิกถึง มิ.ย. 2570</div><div className="bar"><i style={{width:msProgress+"%"}}/></div><div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:"var(--muted)"}}><span>มาแล้ว {memberInfo.visits} ครั้ง</span><span>อีก {nextMs.at-memberInfo.visits} → <span style={{color:"var(--gold)"}}>{nextMs.reward}</span></span></div></div>);
     if(isPending)return(<div className="mcard" onClick={()=>setPage("pending")} style={{cursor:"pointer"}}><div className="tier">รอยืนยันการชำระ</div><div className="nm">คุณ{memberInfo.nickname} ⏳</div><div className="mid">ชำระ 299 ที่เคาน์เตอร์ แล้วแจ้งพนักงาน</div><button className="joinbtn">ดูขั้นตอนชำระ ›</button></div>);
     // FIX 1.2
-    return(<div className="mcard" onClick={()=>setPage("register")} style={{cursor:"pointer"}}><div className="tier">SAHAKON • Founder Member</div><div className="nm">สมัครสมาชิก 299.-/ปี</div><div className="mid">อิตาเลียนโซดาฟรีวันละ 1 แก้ว ตลอด 1 ปี + บันไดรางวัลสะสม</div><button className="joinbtn">สมัครเลย</button></div>);
+    return(<div className="mcard" onClick={()=>setPage("register")} style={{cursor:"pointer"}}><div className="tier">SAHAKON • Founder Member</div><div className="nm">สมัครสมาชิก 299.-/ปี</div><div className="mid">ดื่มฟรีทั้งปี • อิตาเลียนโซดาฟรีวันละ 1 แก้ว นาน 365 วัน</div><button className="joinbtn">สมัครเลย</button></div>);
   };
 
   const Home=()=>(<div className="scroll">
@@ -682,7 +791,7 @@ export default function App(){
     <div className="hero"><img src={night?IMG.hero_night:IMG.hero_day} alt=""/><div className="hero-overlay">
       <h2 className="display">{isActive?"สวัสดี คุณ"+memberInfo.nickname:"SAHAKON"}</h2>
       {/* FIX 1.1 */}
-      <p>{isActive?(night?"Food • Chill • Social":"Cafe • Work • Study"):("🥤 รับอิตาเลียนโซดาฟรี ตลอดปี — สมัคร Founder Member 299.-")}</p>
+      <p>{isActive?(night?"เปิด 10:30 – 24:00 • Cafe • Work • Chill":"เปิด 10:30 – 24:00 • Cafe • Work • Chill"):("🥤 ดื่มฟรีทั้งปี — อิตาเลียนโซดาฟรีวันละ 1 แก้ว สมัคร Founder Member 299.-")}</p>
     </div></div>
     {/* FIX 1.8: Promotion strip between hero and MemberCard (guest only) */}
     {!isActive&&(
@@ -690,20 +799,30 @@ export default function App(){
         <span className="ps-icon">🥤</span>
         <div className="ps-text">
           <b>Founder Member 299.-/ปี</b>
-          <small>อิตาเลียนโซดาฟรีวันละ 1 แก้ว ตลอดปี + บันไดรางวัล</small>
+          <small>ดื่มฟรีทั้งปี • วันละ 1 แก้ว นาน 365 วัน + บันไดรางวัล</small>
         </div>
         <button className="ps-cta" onClick={()=>setPage(isPending?"pending":"register")}>{isPending?"ดูขั้นตอน":"สมัครเลย"}</button>
       </div>
     )}
     <MemberCard/>
-    <div className="grid">{services.map(s=><div key={s.id} className="svc" onClick={()=>{if(s.action==="call"){setToast("เรียกพนักงานแล้ว 🙏");return;}setPage(s.go);}}>{s.locked&&<span className="lock">🔒</span>}<div className="e">{s.emoji}</div><div className="l">{s.label}</div><div className="s">{s.sub}</div></div>)}</div>
+    <div className="grid">{services.map(s=><div key={s.id} className="svc" onClick={()=>{if(s.action==="call"){setToast("เรียกพนักงานแล้ว 🙏");return;}
+              if(s.action==="line"){window.open("https://line.me/R/ti/p/@sahakon","_blank");return;}setPage(s.go);}}>{s.locked&&<span className="lock">🔒</span>}<div className="e">{s.emoji}</div><div className="l">{s.label}</div><div className="s">{s.sub}</div></div>)}</div>
     {showGuide&&<div className="flowbox"><h4 className="display">วิธีใช้งาน<button onClick={()=>setShowGuide(false)}>ซ่อน ✕</button></h4>
       {/* FIX 1.6: Updated step 3 text */}
       {[["นั่งโต๊ะ","สแกน QR บนโต๊ะ สั่งอาหาร"],["สั่งจากมือถือ","ออเดอร์เข้าหน้าจอพนักงาน"],["อยากอิตาเลียนโซดาฟรีทุกวัน?","สมัคร Founder Member 299.-"],["ใช้สิทธิ์","โชว์ QR ตอนจ่ายเงิน"]].map(([t,d],i)=><div className="fstep" key={i}><span className="no">{i+1}</span><span><b>{t}</b> {d}</span></div>)}
     </div>}
     <div className="h2">{night?"คืนนี้ที่ SAHAKON":"ข่าวสาร"}</div>
     {/* FIX 1.7: Promo card updated text */}
-    {(night?[{emoji:"🍲",title:"หมูจุ่ม M มา 4 จ่าย 3",sub:"ทุกอังคาร 17:00+",badge:"คืนนี้"}]:[{emoji:"💳",title:"Founder Member 299.-",sub:"อิตาเลียนโซดาฟรีวันละ 1 แก้ว ตลอดปี",badge:"ช่วงเปิดร้าน"}]).map((p,i)=><div className="promo" key={i}><div style={{fontSize:26}}>{p.emoji}</div><div><b>{p.title}</b><small>{p.sub}</small></div><div className="badge">{p.badge}</div></div>)}
+    {(night
+      ?[
+        {emoji:"🍲",title:"หมูจุ่ม M มา 4 จ่าย 3",sub:"ทุกอังคาร เวลา 17:00 เป็นต้นไป",badge:"คืนนี้"},
+        {emoji:"🥤",title:"ดื่มฟรีทั้งปี",sub:"Founder Member รับอิตาเลียนโซดาฟรีวันละ 1 แก้ว",badge:"สมาชิก"},
+      ]
+      :[
+        {emoji:"💳",title:"Founder Member 299.-/ปี",sub:"ดื่มฟรีทั้งปี • 1 สิทธิ์/วัน • ใช้ได้ 1 ปี",badge:"REDEEM NOW"},
+        {emoji:"☕",title:"กาแฟ + เครื่องดื่ม",sub:"เปิด 10:30 – 24:00 ทุกวัน",badge:"เปิดทุกวัน"},
+      ]
+    ).map((p,i)=><div className="promo" key={i}><div style={{fontSize:26}}>{p.emoji}</div><div><b>{p.title}</b><small>{p.sub}</small></div><div className="badge">{p.badge}</div></div>)}
   </div>);
 
   // FIX 5.6: Register page uses "อิตาเลียนโซดาฟรีวันละ 1 แก้ว"
@@ -713,7 +832,7 @@ export default function App(){
     return(<div className="scroll"><button className="back" onClick={()=>setPage("home")}>‹ กลับ</button><div style={{textAlign:"center"}}><span style={{fontSize:40}}>💳</span></div>
       <h3 className="display" style={{textAlign:"center",fontSize:18,fontWeight:600,marginTop:6}}>สมัคร Founder Member</h3>
       {/* FIX 5.6 */}
-      <p style={{textAlign:"center",color:"var(--muted)",fontSize:12,marginBottom:18}}>299 บาท/ปี • อิตาเลียนโซดาฟรีวันละ 1 แก้ว</p>
+      <p style={{textAlign:"center",color:"var(--muted)",fontSize:12,marginBottom:18}}>299 บาท/ปี • ดื่มฟรีทั้งปี • 1 สิทธิ์/วัน • ใช้ได้ 365 วัน</p>
       <div className="frow"><label>ชื่อเล่น</label><input value={nick} onChange={e=>setNick(e.target.value)} placeholder="เช่น เตชินท์" maxLength={20}/></div>
       <div className="frow"><label>เบอร์โทร</label><input value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/g,"").slice(0,10))} placeholder="08xxxxxxxx" inputMode="numeric"/></div>
       <div className="frow"><label>วันเกิด (วัน/เดือน)</label><input value={bday} onChange={e=>setBday(e.target.value)} placeholder="14/02" maxLength={5}/></div>
@@ -850,7 +969,7 @@ export default function App(){
           <button className="ghost" onClick={()=>setRedeemStep("idle")}>ยกเลิก</button>
         </>)}
         {/* FIX 5.3: Flavor heading updated */}
-        {redeemStep==="flavor"&&(<><div className="privE">🥤</div><h3>เลือกรสอิตาเลียนโซดา</h3><div className="zonebtns" style={{gridTemplateColumns:"1fr 1fr 1fr",marginTop:10}}>{["แดงมะนาว","ลิ้นจี่","ส้ม"].map(f=><button key={f} className={sodaFlavor===f?"on":""} onClick={()=>setSodaFlavor(f)}>{f}</button>)}</div><button className="cta" style={{opacity:sodaFlavor?1:.45}} disabled={!sodaFlavor} onClick={()=>{setSodaRedeemed(true);setMemberInfo(m=>({...m,visits:m.visits+1}));addFreeSoda(sodaFlavor);
+        {redeemStep==="flavor"&&(<><div className="privE">🥤</div><h3>เลือกรสอิตาเลียนโซดา</h3><div className="zonebtns" style={{gridTemplateColumns:"1fr 1fr 1fr",marginTop:10}}>{["แดงมะนาว","ลิ้นจี่","ส้ม","กีวี","องุ่น","บลูฮาวาย","พันช์","สับปะรด","แอปเปิ้ล"].map(f=><button key={f} className={sodaFlavor===f?"on":""} onClick={()=>setSodaFlavor(f)}>{f}</button>)}</div><button className="cta" style={{opacity:sodaFlavor?1:.45}} disabled={!sodaFlavor} onClick={()=>{setSodaRedeemed(true);setMemberInfo(m=>({...m,visits:m.visits+1}));addFreeSoda(sodaFlavor);
           // FIX 5.4: Toast text updated
           setToast("อิตาเลียนโซดา"+sodaFlavor+" เข้าตะกร้าแล้ว (สิทธิ์ Founder Member)");setRedeemStep("upsell");}}>ยืนยันรส</button></>)}
         {redeemStep==="upsell"&&(<><div className="privE">😋</div><h3>เมนูแนะนำคู่โซดา</h3><p>{night?"โซดาตัดเลี่ยนน้ำจิ้มหมูจุ่ม":"เมนูที่ลูกค้าสั่งคู่อิตาเลียนโซดาบ่อยสุด"}</p></>)}
@@ -989,7 +1108,7 @@ export default function App(){
       onClose={()=>setStaffOpen(false)}
     />}
     <header className="topbar">
-      <div className="logo" onClick={handleLogoTap} style={{cursor:"default",userSelect:"none"}}>SAHAKON<small>CAFE • WORK • CHILL</small></div>
+      <div className="logo" onClick={handleLogoTap} style={{cursor:"default",userSelect:"none"}}>SAHAKON<small>CAFE • WORK • CHILL • 10:30–24:00</small></div>
       <div className="modepill"><button className={!night?"on":""} onClick={()=>setMode("day")}>☀️ กลางวัน</button><button className={night?"on":""} onClick={()=>setMode("night")}>🌙 กลางคืน</button></div>
     </header>
     {page==="home"&&<Home/>}{page==="order"&&<Order/>}{page==="redeem"&&<Redeem/>}
