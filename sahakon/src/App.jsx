@@ -1,42 +1,138 @@
 import React, { useState, useEffect } from "react";
-/* SAHAKON v4.1 — Phase 1.5: 27-point UX & Content Audit Applied */
+/* SAHAKON v4.3 — Real menu data, full image library, spirits section, 9 soda flavors */
 
 const IMG = {
+  // ── หมูจุ่ม ──
   "mj-s":"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&h=200&fit=crop&q=80",
   "mj-m":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
   "mj-l":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
-  "d1":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
-  "d2":"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop&q=80",
-  "d3":"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop&q=80",
-  "d4":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
-  "d5":"https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=200&h=200&fit=crop&q=80",
-  "i1":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
-  "i2":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
-  "i3":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
-  "i4":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
-  "i5":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
+  // ── กาแฟ ──
+  "cf1":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&h=200&fit=crop&q=80",
+  "cf2":"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&h=200&fit=crop&q=80",
+  "cf3":"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&h=200&fit=crop&q=80",
+  "cf4":"https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=200&h=200&fit=crop&q=80",
+  "cf5":"https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=200&h=200&fit=crop&q=80",
+  "cf6":"https://images.unsplash.com/photo-1497515114629-f71d768fd07c?w=200&h=200&fit=crop&q=80",
+  "cf7":"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200&h=200&fit=crop&q=80",
+  "cf8":"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&h=200&fit=crop&q=80",
+  "cf9":"https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=200&h=200&fit=crop&q=80",
+  "cf10":"https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=200&h=200&fit=crop&q=80",
+  // ── เครื่องดื่ม: ชา ──
+  "t1":"https://images.unsplash.com/photo-1558857563-b371033873b8?w=200&h=200&fit=crop&q=80",
+  "t2":"https://images.unsplash.com/photo-1556881286-fc6915169721?w=200&h=200&fit=crop&q=80",
+  "t3":"https://images.unsplash.com/photo-1556881286-fc6915169721?w=200&h=200&fit=crop&q=80",
+  "t4":"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=200&h=200&fit=crop&q=80",
+  // ── นมสด ──
+  "m1":"https://images.unsplash.com/photo-1558857563-b371033873b8?w=200&h=200&fit=crop&q=80",
+  "m2":"https://images.unsplash.com/photo-1556881286-fc6915169721?w=200&h=200&fit=crop&q=80",
+  "m3":"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=200&h=200&fit=crop&q=80",
+  "m4":"https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=200&h=200&fit=crop&q=80",
+  "m5":"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop&q=80",
+  // ── อิตาเลียนโซดา ──
+  "s1":"https://images.unsplash.com/photo-1558645836-e44122a743ee?w=200&h=200&fit=crop&q=80",
+  "s2":"https://images.unsplash.com/photo-1578897367039-e9f3a4d8a5d9?w=200&h=200&fit=crop&q=80",
+  "s3":"https://images.unsplash.com/photo-1497534446932-c925b458314e?w=200&h=200&fit=crop&q=80",
+  "s4":"https://images.unsplash.com/photo-1506802913710-3d5b5f9e7f30?w=200&h=200&fit=crop&q=80",
+  "s5":"https://images.unsplash.com/photo-1541014741259-de529411b96a?w=200&h=200&fit=crop&q=80",
+  "s6":"https://images.unsplash.com/photo-1558857563-b371033873b8?w=200&h=200&fit=crop&q=80",
+  "s7":"https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=200&h=200&fit=crop&q=80",
+  "s8":"https://images.unsplash.com/photo-1497534446932-c925b458314e?w=200&h=200&fit=crop&q=80",
+  "s9":"https://images.unsplash.com/photo-1541014741259-de529411b96a?w=200&h=200&fit=crop&q=80",
+  // ── น้ำอัดลม ──
+  "sd1":"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop&q=80",
+  "sd2":"https://images.unsplash.com/photo-1629203851122-3726ecdf080e?w=200&h=200&fit=crop&q=80",
+  "sd3":"https://images.unsplash.com/photo-1554866585-cd94860890b7?w=200&h=200&fit=crop&q=80",
+  "sd4":"https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop&q=80",
+  // ── ตามสั่ง ──
+  "r1":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
+  "r2":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
+  "r3":"https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=200&h=200&fit=crop&q=80",
+  "r4":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  "r5":"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop&q=80",
+  "r6":"https://images.unsplash.com/photo-1562967916-eb82221dfb92?w=200&h=200&fit=crop&q=80",
+  "r7":"https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop&q=80",
+  "r8":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "r9":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  "r10":"https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=200&h=200&fit=crop&q=80",
+  "r11":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  "r12":"https://images.unsplash.com/photo-1569058242567-93de6f36f8e6?w=200&h=200&fit=crop&q=80",
+  "r13":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  // ── ต้ม/สุกี้ ──
+  "sp1":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
+  "sp2":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
+  "sp3":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
+  "sp4":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "sp5":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "sp6":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "sp7":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
+  // ── ของทานเล่น ──
   "a1":"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop&q=80",
   "a2":"https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop&q=80",
   "a3":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200&h=200&fit=crop&q=80",
-  "a4":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
-  "c1":"https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=200&h=200&fit=crop&q=80",
-  "c2":"https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=200&h=200&fit=crop&q=80",
-  "c3":"https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?w=200&h=200&fit=crop&q=80",
-  "c4":"https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?w=200&h=200&fit=crop&q=80",
-  "c5":"https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=200&h=200&fit=crop&q=80",
-  "t1":"https://images.unsplash.com/photo-1558857563-b371033873b8?w=200&h=200&fit=crop&q=80",
-  "t2":"https://images.unsplash.com/photo-1556881286-fc6915169721?w=200&h=200&fit=crop&q=80",
-  "t3":"https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=200&h=200&fit=crop&q=80",
-  "bk1":"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=200&h=200&fit=crop&q=80",
-  "bk2":"https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=200&h=200&fit=crop&q=80",
-  "bk3":"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=200&h=200&fit=crop&q=80",
-  "s1":"https://images.unsplash.com/photo-1558645836-e44122a743ee?w=200&h=200&fit=crop&q=80",
+  "a4":"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200&h=200&fit=crop&q=80",
+  "a5":"https://images.unsplash.com/photo-1608835291093-394b0c943a75?w=200&h=200&fit=crop&q=80",
+  "a6":"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=200&h=200&fit=crop&q=80",
+  "a7":"https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop&q=80",
+  "a8":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  "a9":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  "a10":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  "a11":"https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop&q=80",
+  "a12":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "a13":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  // ── อีสาน ──
+  "i1":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  "i2":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  "i3":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "i4":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  "i5":"https://images.unsplash.com/photo-1547928578-bca3e9c5a0ab?w=200&h=200&fit=crop&q=80",
+  // ── ตำ ──
+  "tm1":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "tm2":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "tm3":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "tm4":"https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=200&fit=crop&q=80",
+  "tm5":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  // ── ย่าง/ทอด ──
+  "gr1":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "gr2":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "gr3":"https://images.unsplash.com/photo-1562967914-608f82629710?w=200&h=200&fit=crop&q=80",
+  "gr4":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "gr5":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  "gr6":"https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=200&h=200&fit=crop&q=80",
+  // ── ยำ ──
+  "y1":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  "y2":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  "y3":"https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=200&h=200&fit=crop&q=80",
+  // ── เบียร์ ──
   "b1":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  "b2":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  "b3":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  "b4":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  // ── เหล้า/spirits ──
+  "sp_sg":"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200&h=200&fit=crop&q=80",
+  "sp_ht":"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=200&h=200&fit=crop&q=80",
+  "sp_rg":"https://images.unsplash.com/photo-1569529465841-dfecdab7503b?w=200&h=200&fit=crop&q=80",
+  "sp_sj":"https://images.unsplash.com/photo-1570598912132-0ba1dc952b7d?w=200&h=200&fit=crop&q=80",
+  "sp_cf1":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  "sp_cf2":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  "sp_cf3":"https://images.unsplash.com/photo-1608270586620-248524c67de9?w=200&h=200&fit=crop&q=80",
+  // ── เครื่องดื่มถัง ──
+  "bk1":"https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=200&h=200&fit=crop&q=80",
+  "bk2":"https://images.unsplash.com/photo-1541014741259-de529411b96a?w=200&h=200&fit=crop&q=80",
+  "bk3":"https://images.unsplash.com/photo-1558857563-b371033873b8?w=200&h=200&fit=crop&q=80",
+  // ── Add-on หมูจุ่ม ──
+  "ao1":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "ao2":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "ao3":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "ao4":"https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=200&h=200&fit=crop&q=80",
+  "ao5":"https://images.unsplash.com/photo-1544025162-d76694265947?w=200&h=200&fit=crop&q=80",
+  "ao7":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  "ao8":"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop&q=80",
+  // ── Hero & Zones ──
   hero_day:"https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&h=400&fit=crop&q=80",
   hero_night:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=400&fit=crop&q=80",
   zone_work:"https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&h=300&fit=crop&q=80",
   zone_glass:"https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=300&fit=crop&q=80",
-  zone_garden:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=300&fit=crop&q=80",
+  zone_garden:"https://images.unsplash.com/photo-1445964047600-cdbdb873673d?w=600&h=300&fit=crop&q=80",
   zone_group:"https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=300&fit=crop&q=80",
   zone_chill:"https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&h=300&fit=crop&q=80",
 };
@@ -219,6 +315,17 @@ const MENU = [
   {id:"b2",cat:"beer",name:"ลีโอ",desc:"ขวดใหญ่ เย็นจัด",price:80,emoji:"🍺"},
   {id:"b3",cat:"beer",name:"สิงห์",desc:"ขวดใหญ่ เย็นจัด",price:85,emoji:"🍺"},
   {id:"b4",cat:"beer",name:"บัดไวเซอร์",desc:"พรีเมียม เย็นจัด",price:90,emoji:"🍺"},
+  {id:"b5",cat:"beer",name:"เบียร์คราฟต์ Hougang",desc:"คราฟต์พรีเมียม",price:150,emoji:"🍺",tag:"Craft"},
+  {id:"b6",cat:"beer",name:"เบียร์คราฟต์ Asali",desc:"คราฟต์รสนุ่ม",price:150,emoji:"🍺",tag:"Craft"},
+  {id:"b7",cat:"beer",name:"เบียร์คราฟต์ Snowy",desc:"คราฟต์สดชื่น",price:150,emoji:"🍺",tag:"Craft"},
+
+  // ── เหล้า/สุรา ──
+  {id:"lq1",cat:"spirits",name:"แสงโสม",desc:"วิสกี้ไทย ขวดปกติ",price:450,emoji:"🥃",tag:"ขายดี"},
+  {id:"lq2",cat:"spirits",name:"หงส์ทอง",desc:"วิสกี้ไทย ขวดปกติ",price:400,emoji:"🥃"},
+  {id:"lq3",cat:"spirits",name:"รีเจนซี่",desc:"บรั่นดี พรีเมียม",price:550,emoji:"🥃"},
+  {id:"lq4",cat:"spirits",name:"โซจู",desc:"เกาหลีแท้ เย็นจัด",price:150,emoji:"🍶"},
+  {id:"lq5",cat:"spirits",name:"โซดา (มิกเซอร์)",desc:"คู่เหล้า",price:20,emoji:"🥤"},
+  {id:"lq6",cat:"spirits",name:"น้ำแข็ง",desc:"ถัง",price:30,emoji:"🧊"},
 
   // ── เครื่องดื่มถัง ──
   {id:"bk1",cat:"bucket",name:"เครื่องดื่มถัง S",desc:"บลูฮาวาย / ไหมไทย / ลิ้นจี่ / สตรอว์เบอร์รี่ / องุ่น / แอปเปิ้ล",price:79,emoji:"🪣"},
@@ -244,11 +351,12 @@ const NIGHT_CATS=[
   {id:"coffee",name:"กาแฟ",emoji:"☕"},
   {id:"drink",name:"เครื่องดื่ม",emoji:"🥤"},
   {id:"beer",name:"เบียร์",emoji:"🍺"},
+  {id:"spirits",name:"เหล้า",emoji:"🥃"},
   {id:"bucket",name:"ถัง",emoji:"🪣"},
 ];
 const CAT_MODE={
   rice:"day",soup:"day",
-  moojum:"night",isan:"night",tam:"night",grill:"night",yum:"night",beer:"night",addon_mj:"night",bucket:"night",
+  moojum:"night",isan:"night",tam:"night",grill:"night",yum:"night",beer:"night",addon_mj:"night",bucket:"night",spirits:"night",
   coffee:"all",drink:"all",snack:"all",
 };
 const MILESTONES=[{at:5,reward:"ท็อปปิ้ง/คุกกี้ฟรี"},{at:15,reward:"เครื่องดื่มฟรี"},{at:30,reward:"จานเดียวฟรี"},{at:60,reward:"หมูจุ่ม S ฟรี"},{at:100,reward:"หมูจุ่ม M + ต่อปี 2 ฟรี"}];
@@ -972,9 +1080,9 @@ export default function App(){
         {redeemStep==="flavor"&&(<><div className="privE">🥤</div><h3>เลือกรสอิตาเลียนโซดา</h3><div className="zonebtns" style={{gridTemplateColumns:"1fr 1fr 1fr",marginTop:10}}>{["แดงมะนาว","ลิ้นจี่","ส้ม","กีวี","องุ่น","บลูฮาวาย","พันช์","สับปะรด","แอปเปิ้ล"].map(f=><button key={f} className={sodaFlavor===f?"on":""} onClick={()=>setSodaFlavor(f)}>{f}</button>)}</div><button className="cta" style={{opacity:sodaFlavor?1:.45}} disabled={!sodaFlavor} onClick={()=>{setSodaRedeemed(true);setMemberInfo(m=>({...m,visits:m.visits+1}));addFreeSoda(sodaFlavor);
           // FIX 5.4: Toast text updated
           setToast("อิตาเลียนโซดา"+sodaFlavor+" เข้าตะกร้าแล้ว (สิทธิ์ Founder Member)");setRedeemStep("upsell");}}>ยืนยันรส</button></>)}
-        {redeemStep==="upsell"&&(<><div className="privE">😋</div><h3>เมนูแนะนำคู่โซดา</h3><p>{night?"โซดาตัดเลี่ยนน้ำจิ้มหมูจุ่ม":"เมนูที่ลูกค้าสั่งคู่อิตาเลียนโซดาบ่อยสุด"}</p></>)}
+        {redeemStep==="upsell"&&(<><div className="privE">😋</div><h3>เมนูแนะนำคู่อิตาเลียนโซดา</h3><p>{night?"โซดาตัดเลี่ยนน้ำจิ้มหมูจุ่ม รสชาติลงตัว":"เมนูที่ลูกค้าสั่งคู่อิตาเลียนโซดาบ่อยสุด"}</p></>)}
       </div>
-      {redeemStep==="upsell"&&(<>{(night?[{id:"mj-s",copy:"เซ็ตเริ่มต้นยอดนิยม"},{id:"mj-m",copy:"3-4 คน อัป M คุ้มกว่า"},{id:"a4",copy:"ของทานเล่นรอน้ำซุป"}]:[{id:"bk1",copy:"อบร้อนชีสยืด คู่อิตาเลียนโซดา"},{id:"d1",copy:"จบในเซ็ตเดียว จานเดียว+อิตาเลียนโซดาฟรี"},{id:"set2",copy:"เซ็ตกาแฟ+เบเกอรี่ ราคาพิเศษ"}]).map(u=>{const m=MENU.find(x=>x.id===u.id);if(!m)return null;return(<div className="promo" key={u.id}><FoodImg id={m.id} emoji={m.emoji} size={48}/><div style={{flex:1}}><b>{m.name} — ฿{m.price}</b><small>{u.copy}</small></div><button className="qty add" style={{width:32,height:32}} onClick={()=>{quickAdd(m);setToast(m.name+" +1");}}>+</button></div>);})}<button className="cta" style={{opacity:paidCount>0?1:.45}} disabled={paidCount===0} onClick={()=>{setRedeemStep("idle");setPage("order");setCartOpen(true);}}>{paidCount>0?"ไปตะกร้า ("+cartCount+" รายการ ฿"+cartTotal+")":"เลือกเมนูอีก 1 รายการก่อน"}</button><button className="ghost" onClick={()=>{setRedeemStep("idle");setPage("order");}}>ดูเมนูหลักทั้งหมด</button></>)}
+      {redeemStep==="upsell"&&(<>{(night?[{id:"mj-s",copy:"เซ็ตเริ่มต้นยอดนิยม"},{id:"mj-m",copy:"3-4 คน อัป M คุ้มกว่า"},{id:"a4",copy:"ทานเล่นรอน้ำซุป"}]:[{id:"r1",copy:"กะเพราหมูสับ คู่ขวัญอิตาเลียนโซดา"},{id:"cf1",copy:"อเมริกาโน่ + อิตาเลียนโซดาฟรี"},{id:"a4",copy:"รวมเล่น 3 อย่าง คุ้มมาก"}]).map(u=>{const m=MENU.find(x=>x.id===u.id);if(!m)return null;return(<div className="promo" key={u.id}><FoodImg id={m.id} emoji={m.emoji} size={48}/><div style={{flex:1}}><b>{m.name} — ฿{m.price}</b><small>{u.copy}</small></div><button className="qty add" style={{width:32,height:32}} onClick={()=>{quickAdd(m);setToast(m.name+" +1");}}>+</button></div>);})}<button className="cta" style={{opacity:paidCount>0?1:.45}} disabled={paidCount===0} onClick={()=>{setRedeemStep("idle");setPage("order");setCartOpen(true);}}>{paidCount>0?"ไปตะกร้า ("+cartCount+" รายการ ฿"+cartTotal+")":"เลือกเมนูอีก 1 รายการก่อน"}</button><button className="ghost" onClick={()=>{setRedeemStep("idle");setPage("order");}}>ดูเมนูหลักทั้งหมด</button></>)}
       <div className="h2">บันไดรางวัลสะสม<span>มาแล้ว {memberInfo.visits} ครั้ง</span></div>
       {MILESTONES.map(m=><div className={"msrow "+(memberInfo.visits>=m.at?"":"locked")} key={m.at}><div className="n">ครั้งที่ {m.at}</div><div style={{fontSize:12.5}}>{m.reward}</div><div className="chk">{memberInfo.visits>=m.at?"✅":"🔒"}</div></div>)}
     </div>);
